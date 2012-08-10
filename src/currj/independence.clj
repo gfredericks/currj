@@ -97,6 +97,8 @@
               [false-lettings new-false-form] (process false-form unknown-locals)]
           [(remove nil?
                    [[c cond-form]
+                    ;; TODO: could emit slightly less noisy code if we
+                    ;; check for (= 1 (count true-lettings)) and such as well
                     (when-not (empty? true-lettings)
                       [(vec (map first true-lettings)) (list 'if c (vec (map second true-lettings)))])
                     (when-not (empty? false-lettings)
