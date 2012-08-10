@@ -97,12 +97,14 @@
               [false-lettings new-false-form] (process false-form unknown-locals)]
           [(remove nil?
                    [[c cond-form]
-                    ;; TODO: could emit slightly less noisy code if we
-                    ;; check for (= 1 (count true-lettings)) and such as well
                     (when-not (empty? true-lettings)
-                      [(vec (map first true-lettings)) (list 'if c (vec (map second true-lettings)))])
+                      (if (= 1 (count true-lettings))
+                        [(first (first true-lettings)) (list 'if c (second (first true-lettings)))]
+                        [(vec (map first true-lettings)) (list 'if c (vec (map second true-lettings)))]))
                     (when-not (empty? false-lettings)
-                      [(vec (map first false-lettings)) (list 'if-not c (vec (map second false-lettings)))])])
+                      (if (= 1 (count false-lettings))
+                        [(first (first false-lettings)) (list 'if-not c (second (first false-lettings)))]
+                        [(vec (map first false-lettings)) (list 'if-not c (vec (map second false-lettings)))]))])
            (list 'if c new-true-form new-false-form)]))
 
       ;; If the cond is not independent then we can only precompute
