@@ -1,28 +1,17 @@
 # currj
 
-currj is an experiment in currying and Clojure. It currently attempts
-to support function calls, if, and let. It's not very well tested, so
-if you want to use it for something serious you should probably check
-the output manually.
+currj is an experiment in currying and partial evaluation in
+Clojure. It currently attempts to support function calls, if, and
+let. It's not very well tested, so if you want to use it for something
+serious you should probably check the output manually.
+
+currj has been pronounced "Courage".
 
 ## Goals
 
 1. Support for all pure functions.
 2. Emit code that is no less efficient than a hand-curried function.
 3. Support ClojureScript
-
-## Usage
-
-``` clojure
-(require '[currj.core :as currj])
-
-(def f (currj/fn [x y] (+ y (* 2 x))))
-(def g (f 5))
-
-(g 3) ;; => 13
-(g -8) ;; => 2
-;; the * function was only called once
-```
 
 ## Example Expansion
 
@@ -153,9 +142,23 @@ the output manually.
     (if (pos? a) (- c (* d d)) (let* [e (inc a)] (/ e c)))))))
 ```
 
+## Usage
+
+``` clojure
+(require '[currj.core :as currj])
+
+(def f (currj/fn [x y] (+ y (* 2 x))))
+(def g (f 5))
+
+(g 3) ;; => 13
+(g -8) ;; => 2
+;; the * function was only called once
+```
+
 ## TODO
 
 * Implement `fn*`
+* Clojurescript support
 
 ## License
 
