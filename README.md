@@ -23,6 +23,106 @@ the output manually.
 ;; the * function was only called once
 ```
 
+## Example Expansion
+
+``` clojure
+;; original
+
+(currj/fn
+ [a b c]
+ (let [d (+ a b)
+       my-constant (* 2 Math/PI)]
+   (if (pos? a)
+     (- c (* d d))
+     (let [e (inc a)] (/ e c)))))
+
+;; simplified (more readable) expansion
+
+(let
+ [my-constant (* 2 Math/PI)]
+ (fn
+  ([a]
+   (let
+    [if-condition2492 (pos? a)
+     e (if-not if-condition2492
+         (inc a)
+         nil)]
+    (fn
+     ([b]
+      (let
+       [d (+ a b)
+        if-condition2494 if-condition2492
+        G__2495 (if if-condition2494 (* d d))]
+       (fn ([c] (if if-condition2494
+                  (- c G__2495)
+                  (/ e c))))))
+     ([b c]
+      (let
+       [d (+ a b)]
+       (if if-condition2492
+         (- c (* d d))
+         (/ e c)))))))
+  ([a b]
+   (let
+    [d (+ a b)
+     if-condition2497 (pos? a)
+     G__2498 (if if-condition2497 (* d d))
+     e (if-not if-condition2497
+         (inc a)
+         nil)]
+    (fn ([c] (if if-condition2497
+               (- c G__2498)
+               (/ e c))))))
+  ([a b c]
+   (let
+    [d (+ a b)]
+    (if (pos? a)
+      (- c (* d d))
+      (let [e (inc a)]
+        (/ e c)))))))
+
+;; actual expansion
+
+(let*
+ [my-constant (* 2 Math/PI)]
+ (fn*
+  ([a]
+   (let*
+    [if-condition2492
+     (pos? a)
+     e
+     (if (clojure.core/not if-condition2492) (inc a) nil)]
+    (fn*
+     ([b]
+      (let*
+       [d
+        (+ a b)
+        if-condition2494
+        if-condition2492
+        G__2495
+        (if if-condition2494 (* d d))]
+       (fn* ([c] (if if-condition2494 (- c G__2495) (/ e c))))))
+     ([b c]
+      (let*
+       [d (+ a b)]
+       (if if-condition2492 (- c (* d d)) (/ e c)))))))
+  ([a b]
+   (let*
+    [d
+     (+ a b)
+     if-condition2497
+     (pos? a)
+     G__2498
+     (if if-condition2497 (* d d))
+     e
+     (if (clojure.core/not if-condition2497) (inc a) nil)]
+    (fn* ([c] (if if-condition2497 (- c G__2498) (/ e c))))))
+  ([a b c]
+   (let*
+    [d (+ a b)]
+    (if (pos? a) (- c (* d d)) (let* [e (inc a)] (/ e c)))))))
+```
+
 ## TODO
 
 * Implement `fn*`
