@@ -1,6 +1,6 @@
 (ns currj.core
   (:refer-clojure :exclude [fn])
-  (:require [clojure.walk :as wk]
+  (:require [clojure.walk :as wk] ; TODO: use the clojure.tools.macro version instead
             [currj.independence :as ci]))
 
 (defmacro fn
