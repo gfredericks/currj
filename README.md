@@ -9,6 +9,7 @@ the output manually.
 
 1. Support for all pure functions.
 2. Emit code that is no less efficient than a hand-curried function.
+3. Support ClojureScript
 
 ## Usage
 
@@ -24,6 +25,35 @@ the output manually.
 ```
 
 ## Example Expansion
+
+### Small Example
+
+``` clojure
+;; original
+
+(currj/fn [a b]
+  (+ b (* (dec a)
+          (+ 88 42))))
+
+;; simplified (readable) expansion
+
+(let
+ [G__2256 (+ 88 42)]
+ (fn
+  ([a] (let [G__2257 (* (dec a) G__2256)]
+         (fn [b] (+ b G__2257))))
+  ([a b] (+ b (* (dec a) G__2256)))))
+
+;; actual expansion
+
+(let*
+ [G__2256 (+ 88 42)]
+ (fn*
+  ([a] (let* [G__2257 (* (dec a) G__2256)] (fn* ([b] (+ b G__2257)))))
+  ([a b] (+ b (* (dec a) G__2256)))))
+```
+
+### Bigger Example
 
 ``` clojure
 ;; original
