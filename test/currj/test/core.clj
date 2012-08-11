@@ -85,3 +85,11 @@
     (is (= 1 (called +)))
     (is (= 62 (g 2)))
     (is (= 1 (called +)))))
+
+(deftest quote-test
+  (let [f (currj/fn [a b] (list* a b '(1 2 3 4)))]
+    (is (= ((f 8) 9) '(8 9 1 2 3 4)))))
+
+(deftest shadowing-quote-test
+  (let [f (currj/fn [a b] (let [a (* 2 a)] (list* a b '(a b c))))]
+    (is (= ((f 8) 9) '(16 9 a b c)))))
